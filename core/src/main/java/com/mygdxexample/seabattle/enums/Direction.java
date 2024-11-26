@@ -1,4 +1,4 @@
-package com.mygdxexample.seabattle.utils;
+package com.mygdxexample.seabattle.enums;
 
 public enum Direction {
     HORIZONTAL,

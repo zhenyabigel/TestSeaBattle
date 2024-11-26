@@ -1,5 +1,8 @@
 package com.mygdxexample.seabattle.model;
 
+import lombok.ToString;
+
+@ToString
 public class Cell {
 
     private boolean isEmpty;
@@ -19,12 +22,5 @@ public class Cell {
     // Метод для установки состояния ячейки
     public void setOccupied() {
         this.isEmpty = false; // Если ячейка занята, то она не пустая
-    }
-
-    @Override
-    public String toString() {
-        return "Cell{" +
-            "isEmpty=" + isEmpty +
-            '}';
     }
 }

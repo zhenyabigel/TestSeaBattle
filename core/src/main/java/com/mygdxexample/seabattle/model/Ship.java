@@ -2,30 +2,31 @@ package com.mygdxexample.seabattle.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.mygdxexample.seabattle.utils.Direction;
+import com.mygdxexample.seabattle.enums.Direction;
 
 public class Ship {
-    private int size;           // Размер корабля
-    private int startRow;      // Начальная строка
-    private int startCol;      // Начальный столбец
-    private Direction direction; // Направление (горизонтальное или вертикальное)
-    private Texture texture;
+    private int size;
+    private int startX;
+    private int startY;
+    private Direction direction;
+    private final Texture texture;
+    private Texture hittedTexture;
 
-    public Ship(int size, int startRow, int startCol, Direction direction) {
+    public Ship(int size, int startX, int startY, Direction direction) {
         this.size = size;
-        this.startRow = startRow;
-        this.startCol = startCol;
+        this.startX = startX;
+        this.startY = startY;
         this.direction = direction;
-        this.texture = loadTexture(size, direction); // Загружаем текстуру
+        this.texture = loadTexture(size, direction, Type.NOT_HITTED);
+        this.hittedTexture = loadTexture(size, direction, Type.HITTED);
     }
 
     public Ship(int size) {
         this.size = size;
-        this.startRow = 0;
-        this.startCol = 0;
+        this.startX = 0;
+        this.startY = 0;
         this.direction = Direction.HORIZONTAL;
         this.texture = new Texture(Gdx.files.internal("textures/transparent.png"));
-        // Загружаем текстуру
     }
 
 
@@ -37,20 +38,20 @@ public class Ship {
         this.size = size;
     }
 
-    public int getStartRow() {
-        return startRow;
+    public int getStartX() {
+        return startX;
     }
 
-    public void setStartRow(int startRow) {
-        this.startRow = startRow;
+    public void setStartX(int startX) {
+        this.startX = startX;
     }
 
-    public int getStartCol() {
-        return startCol;
+    public int getStartY() {
+        return startY;
     }
 
-    public void setStartCol(int startCol) {
-        this.startCol = startCol;
+    public void setStartY(int startY) {
+        this.startY = startY;
     }
 
     public Direction isHorizontal() {
@@ -58,26 +59,35 @@ public class Ship {
     }
 
     public Texture getTexture() {
-        return texture; // Геттер для текстуры
+        return texture;
     }
 
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
 
-    public void setTexture() {
-        texture = loadTexture(size, direction);
-    }
 
     public Direction getDirection() {
         return direction;
     }
 
-    private Texture loadTexture(int size, Direction direction) {
-        String textureName = "textures/ship"; // Базовое имя текстуры
-        textureName += size; // Добавляем размер
+    private Texture loadTexture(int size, Direction direction, Type type) {
+        String textureName = type == Type.NOT_HITTED ? "textures/ship" : "textures/hitted_ship";
+        textureName += size;
         textureName += direction == Direction.VERTICAL ? "vertical.png" : "horizontal.png";
 
         return new Texture(Gdx.files.internal(textureName));
+    }
+
+    public Texture getHittedTexture() {
+        return hittedTexture;
+    }
+
+    public void setHittedTexture(Texture hittedTexture) {
+        this.hittedTexture = hittedTexture;
+    }
+
+    private enum Type {
+        HITTED, NOT_HITTED
     }
 }

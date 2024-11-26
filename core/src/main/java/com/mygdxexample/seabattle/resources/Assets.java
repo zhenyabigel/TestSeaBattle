@@ -3,8 +3,18 @@ package com.mygdxexample.seabattle.resources;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 
+
+//@UtilityClass
 public class Assets {
+
+
     public final AssetManager manager = new AssetManager();
+
+    public static final String WOOD_FOR_CIRCLE = "textures/wood_background.jpg";
+    public static final String VERTEX_FOR_PLAYGROUND = "vertexPlayground.glsl";
+    public static final String FRAGMENT_FOR_PLAYGROUND = "fragmentPlayground.glsl";
+    public static final String FRAGMENT_FOR_SHIPS = "fragmentShips.glsl";
+    public static final String VERTEX_FOR_SHIPS = "vertexShips.glsl";
     public static final String BACKGROUND_WOOD = "textures/background_wood.png";
     public static final String BACKGROUND_PAPER = "textures/sheet_of_paper_background.png";
     public static final String PLAYABLE_BACKGROUND = "textures/playable_background.png";
@@ -21,6 +31,7 @@ public class Assets {
         manager.load(BACKGROUND_WOOD, Texture.class);
         manager.load(PLAYABLE_BACKGROUND, Texture.class);
         manager.load(CELL_TEXTURE, Texture.class);
+
     }
 
     public void dispose() {

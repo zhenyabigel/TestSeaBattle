@@ -10,16 +10,19 @@ public class SeaBattleGame extends Game {
 
     public SpriteBatch batch;
     public Assets assets;
+
+//    public MainScreen mainScreen;
     public GameScreen gameScreen;
 
     @Override
     public void create() {
-        batch  = new SpriteBatch();
+        batch = new SpriteBatch();
         assets = new Assets();
 
         assets.load();
         assets.manager.finishLoading();
 
+//        mainScreen = new MainScreen(this);
         gameScreen = new GameScreen(this);
         setScreen(gameScreen);
     }
