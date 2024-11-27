@@ -1,18 +1,19 @@
 package com.mygdxexample.seabattle;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdxexample.seabattle.resources.Assets;
 import com.mygdxexample.seabattle.screens.GameScreen;
+import com.mygdxexample.seabattle.screens.MainScreen;
+import com.sun.tools.javac.Main;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+/**
+ * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
+ */
 public class SeaBattleGame extends Game {
-
-    public SpriteBatch batch;
-    public Assets assets;
-
-//    public MainScreen mainScreen;
-    public GameScreen gameScreen;
+    SpriteBatch batch;
+    Assets assets;
 
     @Override
     public void create() {
@@ -22,8 +23,15 @@ public class SeaBattleGame extends Game {
         assets.load();
         assets.manager.finishLoading();
 
-//        mainScreen = new MainScreen(this);
-        gameScreen = new GameScreen(this);
-        setScreen(gameScreen);
+        MainScreen mainScreen = new MainScreen(this);
+        GameScreen gameScreen = new GameScreen(this);
+        setScreen(mainScreen);
+    }
+
+    public SpriteBatch getBatch() {
+        return batch;
+    }
+    public Assets getAssets() {
+        return assets;
     }
 }
