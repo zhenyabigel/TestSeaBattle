@@ -1,7 +1,21 @@
-package com.mygdxexample.seabattle.utils;
+package com.mygdxexample.seabattle.service;
+
+import static com.mygdxexample.seabattle.resources.GlobalVariables.COORDINATE_X_START_PLAYGROUND;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.COORDINATE_Y_START_PLAYGROUND;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.GRID_HEIGHT;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.GRID_WIDTH;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.PADDING_FOR_PLAYGROUND_BACK;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.PLAYGROUND_NUM_CELLS_X;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.PLAYGROUND_NUM_CELLS_Y;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.RADIUS;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.SQUARE_SIZE;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.UNIFORMS_CIRCLE_POS;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.UNIFORMS_CIRCLE_TEXTURE;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.UNIFORMS_RADIUS;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.UNIFORMS_RESOLUTION;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.UNIFORMS_TEXTURE;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,19 +23,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.mygdxexample.seabattle.resources.Assets;
 
 import java.util.Random;
-import java.util.Vector;
 
-import static com.mygdxexample.seabattle.resources.GlobalVariables.*;
-
-public class PlaygroundRepository {
+public class PlaygroundService {
 
     private final SpriteBatch batch;
-
-    private AssetManager manager;
     private Texture[] cellsLettersTextures;
     private Texture[] cellsNumbersTextures;
 
@@ -34,18 +42,12 @@ public class PlaygroundRepository {
 
     private Vector2 circlePos;
 
-    private final ExtendViewport viewport;
-
-
-    public PlaygroundRepository(SpriteBatch batch, AssetManager manager) {
+    public PlaygroundService(SpriteBatch batch) {
         this.batch = batch;
-        this.manager = manager;
         playableBackground = new Texture(Gdx.files.internal(Assets.PLAYABLE_BACKGROUND));
         squareTexture = new Texture(Gdx.files.internal(Assets.CELL_TEXTURE));
         circleTexture = new Texture(Gdx.files.internal(Assets.WOOD_FOR_CIRCLE));
-        viewport = new ExtendViewport(WORLD_WIDTH, MIN_WORLD_HEIGHT);
-        fbo = new FrameBuffer(
-            Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+        fbo = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
         shader = new ShaderProgram(Gdx.files.internal(Assets.VERTEX_FOR_PLAYGROUND), Gdx.files.internal(Assets.FRAGMENT_FOR_PLAYGROUND));
         generateRandomBallCenter();
 
@@ -99,7 +101,6 @@ public class PlaygroundRepository {
         textureRegion.flip(false, true);
 
         batch.begin();
-        batch.setShader(shader);
         shader.setUniformf(UNIFORMS_RESOLUTION, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         shader.setUniformf(UNIFORMS_CIRCLE_POS, circlePos);
         shader.setUniformf(UNIFORMS_RADIUS, RADIUS);
@@ -107,15 +108,18 @@ public class PlaygroundRepository {
         shader.setUniformi(UNIFORMS_CIRCLE_TEXTURE, 1);
         fboTex.bind(0);
         shader.setUniformi(UNIFORMS_TEXTURE, 0);
+        batch.setShader(shader);
 
+        System.out.println();
         batch.draw(textureRegion, 0, 0, fboTex.getWidth(), fboTex.getHeight());
         batch.end();
         batch.setShader(null);
+
         batch.flush();
     }
 
 
-    public void initTextureLettersArray() {
+    private void initTextureLettersArray() {
         cellsLettersTextures = new Texture[PLAYGROUND_NUM_CELLS_Y];
 
         for (int i = 0; i < cellsLettersTextures.length; i++) {
@@ -168,4 +172,12 @@ public class PlaygroundRepository {
         return circlePos;
     }
 
+    public void dispose() {
+        fbo.dispose();
+        batch.dispose();
+        playableBackground.dispose();
+        squareTexture.dispose();
+        circleTexture.dispose();
+        shader.dispose();
+    }
 }
