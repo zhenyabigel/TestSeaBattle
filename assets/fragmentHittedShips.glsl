@@ -3,9 +3,9 @@ precision mediump float;
 #endif
 
 uniform sampler2D u_mask;
-uniform vec2 u_circleCenter; // Центр круга (в нормализованных координатах)
-uniform float u_circleRadius; // Радиус круга (в нормализованных координатах)
-uniform vec2 u_textureSize; // Размер текстуры в пикселях
+uniform vec2 u_circleCenter;
+uniform float u_circleRadius;
+uniform vec2 u_textureSize;
 
 varying vec4 v_color;
 varying vec2 v_texCoord0;
@@ -25,7 +25,7 @@ vec2 flippedTexCoord = vec2(v_texCoord0.x, 1.0 - v_texCoord0.y);
     if (distance > normalCircleRadius) {
          gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
      } else if (mask.w == 0.0){
-              gl_FragColor = vec4(0.91, 0.64, 0.15, 1.0);
+              gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
      }
      else{
          gl_FragColor = mask;

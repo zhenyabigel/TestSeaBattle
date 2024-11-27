@@ -191,9 +191,8 @@ public class ShipService {
         }
 
         shader.bind();
-
         shader.setUniformf(CIRCLE_RADIUS_UNIFORM, RADIUS);
-        shader.setUniformf(CIRCLE_CENTER_UNIFORM, circlePos);
+        shader.setUniformf(CIRCLE_CENTER_UNIFORM, circlePos.x, WINDOW_HEIGHT - circlePos.y);
         shader.setUniformf(
             TEXTURE_SIZE_UNIFORM, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         shader.setUniformi(MASK_UNIFORM, 0);
@@ -221,9 +220,8 @@ public class ShipService {
 
         shaderHitted.bind();
 
-
         shaderHitted.setUniformf(CIRCLE_RADIUS_UNIFORM, RADIUS);
-        shaderHitted.setUniformf(CIRCLE_CENTER_UNIFORM, circlePos);
+        shaderHitted.setUniformf(CIRCLE_CENTER_UNIFORM, circlePos.x, WINDOW_HEIGHT - circlePos.y);
         shaderHitted.setUniformf(
             TEXTURE_SIZE_UNIFORM, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         shaderHitted.setUniformi(MASK_UNIFORM, 0);

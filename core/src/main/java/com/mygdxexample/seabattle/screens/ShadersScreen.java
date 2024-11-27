@@ -102,7 +102,8 @@ public class ShadersScreen implements Screen {
 
 
     private void createAutoButton() {
-        TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(Assets.AUTO_BUTTON))));
+        TextureRegionDrawable buttonDrawable =
+            new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(Assets.AUTO_BUTTON))));
         generateButton = new ImageButton(buttonDrawable);
 
         generateButton.addListener(new ClickListener() {
@@ -118,7 +119,8 @@ public class ShadersScreen implements Screen {
     }
 
     private void createBackButton() {
-        TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(Assets.BACK_BUTTON))));
+        TextureRegionDrawable buttonDrawable =
+            new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(Assets.BACK_BUTTON))));
         backButton = new ImageButton(buttonDrawable);
 
         backButton.addListener(new ClickListener() {

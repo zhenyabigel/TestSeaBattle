@@ -1,9 +1,5 @@
 package com.mygdxexample.seabattle.screens;
 
-import static com.mygdxexample.seabattle.resources.GlobalVariables.WINDOW_HEIGHT;
-import static com.mygdxexample.seabattle.resources.GlobalVariables.WINDOW_WIDTH;
-import static com.mygdxexample.seabattle.resources.GlobalVariables.WORLD_HEIGHT;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -21,6 +17,8 @@ import com.mygdxexample.seabattle.SeaBattleGame;
 import com.mygdxexample.seabattle.resources.Assets;
 import com.mygdxexample.seabattle.service.PlaygroundService;
 import com.mygdxexample.seabattle.service.ShipService;
+
+import static com.mygdxexample.seabattle.resources.GlobalVariables.*;
 
 public class GameScreen implements Screen {
     private final SeaBattleGame game;
@@ -95,9 +93,8 @@ public class GameScreen implements Screen {
         playgroundService.dispose();
         playgroundBatch.dispose();
         shipsBatch.dispose();
-
+        stage.dispose();
     }
-
 
     private void createAutoButton() {
         TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(Assets.AUTO_BUTTON))));
@@ -126,7 +123,7 @@ public class GameScreen implements Screen {
             }
         });
 
-        backButton.setPosition((float) WINDOW_WIDTH / 5 * 3, (float) WINDOW_HEIGHT / 4*2);
+        backButton.setPosition((float) WINDOW_WIDTH / 5 * 3, (float) WINDOW_HEIGHT / 4 * 2);
         backButton.setSize((float) WINDOW_WIDTH / 6, (float) WINDOW_HEIGHT / 6);
     }
 
