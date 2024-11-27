@@ -29,7 +29,6 @@ public class Ship {
         this.texture = new Texture(Gdx.files.internal("textures/transparent.png"));
     }
 
-
     public int getSize() {
         return size;
     }
@@ -87,7 +86,7 @@ public class Ship {
         this.hittedTexture = hittedTexture;
     }
 
-    private enum Type {
+    public enum Type {
         HITTED, NOT_HITTED
     }
 }

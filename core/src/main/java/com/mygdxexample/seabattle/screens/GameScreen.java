@@ -1,11 +1,13 @@
 package com.mygdxexample.seabattle.screens;
 
-import static com.mygdxexample.seabattle.resources.GlobalVariables.MIN_WORLD_HEIGHT;
-import static com.mygdxexample.seabattle.resources.GlobalVariables.WORLD_SCALE;
-import static com.mygdxexample.seabattle.resources.GlobalVariables.WORLD_WIDTH;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.WINDOW_HEIGHT;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.WINDOW_WIDTH;
+import static com.mygdxexample.seabattle.resources.GlobalVariables.WORLD_HEIGHT;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,69 +16,65 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdxexample.seabattle.SeaBattleGame;
 import com.mygdxexample.seabattle.resources.Assets;
-import com.mygdxexample.seabattle.utils.PlaygroundRepository;
-import com.mygdxexample.seabattle.utils.ShipRepository;
+import com.mygdxexample.seabattle.service.PlaygroundService;
+import com.mygdxexample.seabattle.service.ShipService;
 
 public class GameScreen implements Screen {
-
     private final SeaBattleGame game;
-    private final ExtendViewport viewport;
+    OrthographicCamera camera;
     private Stage stage;
     private ImageButton generateButton;
-    private Texture backgroundWoodTexture;
-    private PlaygroundRepository playgroundRepository;
-    private ShipRepository shipRepository;
+    private ImageButton backButton;
+    private PlaygroundService playgroundService;
+    private ShipService shipService;
     private SpriteBatch playgroundBatch;
     private SpriteBatch shipsBatch;
 
     public GameScreen(SeaBattleGame game) {
         this.game = game;
-        viewport = new ExtendViewport(WORLD_WIDTH, MIN_WORLD_HEIGHT);
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, WINDOW_WIDTH, WORLD_HEIGHT);
         createGameArea();
     }
 
     public void createGameArea() {
         playgroundBatch = new SpriteBatch();
         shipsBatch = new SpriteBatch();
-
-        backgroundWoodTexture = game.assets.manager.get(Assets.BACKGROUND_WOOD);
-        playgroundRepository = new PlaygroundRepository(playgroundBatch, game.assets.manager);
-        createButton();
-        shipRepository = new ShipRepository(shipsBatch,playgroundRepository.getCirclePos());
+        playgroundService = new PlaygroundService(playgroundBatch);
+        shipService = new ShipService(shipsBatch, playgroundService.getCirclePos());
     }
 
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-        createButton();
+        createAutoButton();
+        createBackButton();
         stage.addActor(generateButton);
+        stage.addActor(backButton);
     }
 
     @Override
     public void render(float v) {
+        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        camera.update();
 
-        ScreenUtils.clear(1, 1, 1, 1);
+        game.getBatch().setProjectionMatrix(camera.combined);
 
-        playgroundRepository.drawUsingShaders();
-
-        game.batch.begin();
-        game.batch.draw(backgroundWoodTexture, 0, 0, backgroundWoodTexture.getWidth(), backgroundWoodTexture.getHeight() * WORLD_SCALE);
-        game.batch.end();
+        playgroundService.drawUsingShaders();
+        shipService.drawShips();
 
         stage.act(v);
         stage.draw();
-        shipRepository.drawShips();
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height, true);
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -93,31 +91,51 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+        shipService.dispose();
+        playgroundService.dispose();
+        playgroundBatch.dispose();
+        shipsBatch.dispose();
+
     }
 
 
-    private void createButton() {
-
-        TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(
-            new TextureRegion(
-                new Texture(Gdx.files.internal("textures/button.png"))));
+    private void createAutoButton() {
+        TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(Assets.AUTO_BUTTON))));
         generateButton = new ImageButton(buttonDrawable);
 
         generateButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Button clicked!");
-                shipRepository.generateRandomShips();
-                playgroundRepository.generateRandomBallCenter();
+                shipService.generateRandomShips();
+                resetGameState();
             }
         });
 
-        generateButton.setPosition(2000, 100);
-        generateButton.setWidth(200);
-        generateButton.setHeight(100);
+        generateButton.setPosition((float) WINDOW_WIDTH / 5 * 3, (float) WINDOW_HEIGHT / 4);
+        generateButton.setSize((float) WINDOW_WIDTH / 6, (float) WINDOW_HEIGHT / 6);
     }
 
+    private void createBackButton() {
+        TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(Assets.BACK_BUTTON))));
+        backButton = new ImageButton(buttonDrawable);
 
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new MainScreen(game));
+            }
+        });
+
+        backButton.setPosition((float) WINDOW_WIDTH / 5 * 3, (float) WINDOW_HEIGHT / 4*2);
+        backButton.setSize((float) WINDOW_WIDTH / 6, (float) WINDOW_HEIGHT / 6);
+    }
+
+    private void resetGameState() {
+        playgroundBatch = new SpriteBatch();
+        shipsBatch = new SpriteBatch();
+        playgroundService = new PlaygroundService(playgroundBatch);
+        shipService = new ShipService(shipsBatch, playgroundService.getCirclePos());
+    }
 }
 
 
